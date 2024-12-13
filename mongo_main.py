@@ -1,8 +1,8 @@
-from pymongo import MongoClient  # For connecting to MongoDB
-import pandas as pd  # For handling CSV files
-import os  # For file validation
-from mongo_config import MongoDBConfig, Config  # MongoDB configuration and schema
-from mongo_query_generator import QueryGenerator  # To generate and parse queries
+from pymongo import MongoClient
+import pandas as pd
+import os
+from mongo_config import MongoDBConfig, Config
+from mongo_query_generator import QueryGenerator
 from mongo_sample_queries import SampleQueryGenerator, display_sample_queries
 
 
@@ -15,21 +15,21 @@ class ChatDBMongo:
             Config.VALID_TOTAL_METRICS["default"],
             Config.VALID_AVERAGE_METRICS["default"],
             Config.VALID_GROUPS["default"],
-            Config.NUMERIC_FILTERS,  # Pass NUMERIC_FILTERS as a list
-            Config.STRING_FILTERS   # Pass STRING_FILTERS as a list
+            Config.NUMERIC_FILTERS,  # pass NUMERIC_FILTERS as a list
+            Config.STRING_FILTERS   # pass STRING_FILTERS as a list
         )
         self.sample_query_generator = SampleQueryGenerator(
             Config.VALID_TOTAL_METRICS["default"],
             Config.VALID_AVERAGE_METRICS["default"],
             Config.VALID_GROUPS["default"],
-            Config.NUMERIC_FILTERS,  # Pass NUMERIC_FILTERS as a list
-            Config.STRING_FILTERS   # Pass STRING_FILTERS as a list
+            Config.NUMERIC_FILTERS,  # pass NUMERIC_FILTERS as a list
+            Config.STRING_FILTERS   # pass STRING_FILTERS as a list
         )
         self.selected_collection = None
 
 
+    # uploading dataset to db
     def upload_dataset(self, file_path, collection_name):
-        """Upload dataset to MongoDB."""
         try:
             df = pd.read_csv(file_path)
             data = df.to_dict(orient="records")
@@ -38,8 +38,9 @@ class ChatDBMongo:
         except Exception as e:
             print(f"Error uploading dataset to MongoDB: {e}")
 
+
+    # func to list collections in db
     def list_collections(self):
-        """List all collections in MongoDB."""
         collections = self.db.list_collection_names()
         if not collections:
             print("No collections available.")
@@ -49,10 +50,11 @@ class ChatDBMongo:
             print(f"{idx}. {col}")
         return collections
 
+
+    # func to prompt user to select collection
     def select_collection(self):
-        """Prompt user to select a collection."""
         collections = self.list_collections()
-        if collections:  # Ensure collections exist
+        if collections:  # make sure collections exist
             while True:
                 try:
                     collection_idx = int(input(f"Select a collection by number (1-{len(collections)}): ")) - 1
@@ -65,67 +67,70 @@ class ChatDBMongo:
                 except ValueError:
                     print("Invalid input. Please enter a valid number.")
 
+
+    # schema & sample data for collection
     def describe_collection(self):
-        """Describe the selected collection: Show schema and sample data."""
         if not self.selected_collection:
-            print("Please explore data to select a collection first.")
+            print("Please explore data to select a collection first.") # prompt user to select collection first
             return
         print(f"\n### {self.selected_collection.upper()} ###")
         document = self.db[self.selected_collection].find_one()
         if not document:
             print(f"Collection {self.selected_collection} is empty.")
             return
-        # Show schema
+        # show schema
         print("Schema of the Data:")
         for idx, key in enumerate(document.keys(), start=1):
             print(f"{idx}. {key}")
 
-        # Show sample data
+        # show sample data
         print("\nSample Data:")
         samples = self.db[self.selected_collection].find().limit(5)
         for idx, sample in enumerate(samples, start=1):
             print(f"{idx}. {sample}")
 
+
+    # function for sample queries
     def show_sample_queries(self):
-        """Generate and display sample queries."""
         if not self.selected_collection:
             print("Please explore data to select a collection first.")
             return
         queries = self.sample_query_generator.generate_sample_queries(5)
-        display_sample_queries(queries)  # Use the display function for formatted output
+        display_sample_queries(queries)  # display function for formatted output
 
+
+    # process & execute user query
     def process_query(self, query):
-        """Process and execute a user query."""
         if not self.selected_collection:
             print("Please explore data to select a collection first.")
             return
 
-        # Parse the natural language query
+        # parse natural language query
         query_type, params = self.query_generator.parse_query(query)
         if not query_type:
             print("Query not recognized. Please try again")
             return
 
         try:
-            # Generate the MongoDB query
+            # generate the MongoDB query
             mongo_query = self.query_generator.generate_mongo_query(query_type, params)
 
-            # Display the MongoDB query
+            # display mongo query
             print("\nMongoDB Query:")
-            if isinstance(mongo_query, list):  # For aggregation pipelines
+            if isinstance(mongo_query, list):
                 for stage in mongo_query:
                     print(stage)
-            else:  # For single-stage queries
+            else:
                 print(mongo_query)
 
-            # Execute the MongoDB query
+            # execute query
             collection = self.db[self.selected_collection]
-            if isinstance(mongo_query, list):  # Aggregation
+            if isinstance(mongo_query, list):
                 results = collection.aggregate(mongo_query)
             else:
                 results = collection.find(mongo_query)
 
-            # Display the query results
+            # display results
             print("\nResults:")
             results_found = False
             for res in results:
@@ -137,8 +142,9 @@ class ChatDBMongo:
         except Exception as e:
             print(f"Error executing query: {e}")
 
+
+    # delete current collection
     def delete_collection(self):
-        """Delete the currently selected collection."""
         if not self.selected_collection:
             print("No collection is currently selected.")
             return
@@ -150,17 +156,17 @@ class ChatDBMongo:
         else:
             print("Delete operation cancelled.")
 
+
+    # switch collection
     def switch_collection(self):
-        """Switch to another collection."""
         self.select_collection()
 
     def close(self):
-        """Close MongoDB connection."""
         self.client.close()
 
 
+# upload dataset to mongo
 def upload_dataset():
-    """Prompt the user to upload a dataset and return the file path."""
     file_path = input("Enter the full path of the dataset file (CSV format): ").strip()
     if not os.path.exists(file_path) or not file_path.endswith('.csv'):
         print("Invalid file path or format. Please upload a valid CSV file.")
@@ -213,4 +219,3 @@ def mongo_main():
             print("Invalid command. Please try again.")
 
     chatdb.close()
-
