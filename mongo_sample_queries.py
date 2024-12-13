@@ -1,4 +1,3 @@
-
 import random
 
 class SampleQueryGenerator:
@@ -77,7 +76,7 @@ class SampleQueryGenerator:
         elif filter_column == "category":
             return ["Electronics", "Clothing", "Sports", "Books"]
         elif filter_column == "payment_method":
-            return ["Credit Card", "Debit Card"]
+            return ["Credit Card", "Debit Card", "PayPal"]
         return []
 
     def generate_sample_queries(self, num_queries: int = 5) -> list:
@@ -86,6 +85,7 @@ class SampleQueryGenerator:
 
 
 
+# func to display both natural language and mongo queries
 def display_sample_queries(samples):
     print("\nSample Queries:")
     for i, sample in enumerate(samples, 1):
@@ -96,16 +96,16 @@ def display_sample_queries(samples):
         print(f"   {natural_query}")
         print("   MongoDB Query:")
 
-        # Handle multi-stage MongoDB queries (lists)
+        # for multi stage queries
         if isinstance(mongo_query, list):
             for stage in mongo_query:
                 print(f"       {stage}")
 
-        # Handle single-stage MongoDB queries (dicts)
+        # Hfor single stage queries
         elif isinstance(mongo_query, dict):
             print(f"       {mongo_query}")
 
-        print()  # Add extra space between queries for better readability
+        print()
 
 
 
