@@ -4,7 +4,7 @@ class DatabaseConfig:
     # Database connection configuration
     HOST = 'localhost'  # Database host (e.g., 'localhost' for local MySQL server)
     USER = 'root'       # Your MySQL username
-    PASSWORD = 'Hello@12345'  # Your MySQL password
+    PASSWORD = 'sa53vu17'  # Your MySQL password
     DATABASE = 'chatDB'       # Name of your MySQL database
 
 class Config:
