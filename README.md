@@ -60,3 +60,5 @@ sqlquery_generator.py
 sqlsample_queries.py
 - Generates and displays sample SQL queries to help users understand the syntax and capabilities of the system.
 - Includes examples for filtering data, calculating totals, and finding averages.
+
+*** We also uploaded 2 of our 3 datasets since the 3rd one was too large to upload to GitHub ***
