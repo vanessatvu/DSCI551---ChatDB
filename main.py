@@ -14,7 +14,7 @@ def main():
 
         if db_choice == "1":
             print("\nYou have selected the MongoDB Database System.")
-            mongo_main() # call mysql interface
+            mongo_main() # call mongodb interface
             break
         elif db_choice == "2":
             print("\nYou have selected the MySQL Database System.")
@@ -30,12 +30,12 @@ def sql_main():
     print("Welcome to the Sales MySQL System! Type 'exit' to quit.")
 
     while True:
-        print("\nCommands: upload_dataset, explore, sample_queries, query, exit")
+        print("\nCommands: upload dataset, explore, sample queries, query, exit")
         cmd = input("Enter a command: ").strip().lower()
 
         if cmd == "exit":
             break
-        elif cmd == "upload_dataset":
+        elif cmd == "upload dataset":
             # Prompt user to upload a dataset
             dataset_path = upload_dataset()
             if dataset_path:
@@ -43,7 +43,7 @@ def sql_main():
                 chatdb.upload_dataset(dataset_path, table_name)
         elif cmd == "explore":
             chatdb.explore_tables()
-        elif cmd == "sample_queries":
+        elif cmd == "sample queries":
             chatdb.show_sample_queries()
         elif cmd == "query":
             query = input("Enter your query: ")
