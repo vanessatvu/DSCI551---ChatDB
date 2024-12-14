@@ -1,4 +1,10 @@
 # DSCI551---ChatDB
+
+## Team Members
+Vanessa Vu
+Nevedita Jayakumar
+
+## Requirements
 To run the project, ensure you have the following dependencies installed:
 
 pymysql==1.1.0
