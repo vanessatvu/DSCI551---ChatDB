@@ -2,6 +2,7 @@
 
 ## Team Members
 Vanessa Vu
+
 Nevedita Jayakumar
 
 ## Requirements
