@@ -21,6 +21,7 @@ MongoDB: Set up your MongoDB database with the required collections.
 
 3. Run the Main Script
 Execute the main.py file to start the application:
+
 python main.py
 
 ## File Descriptions
